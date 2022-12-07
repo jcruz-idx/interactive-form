@@ -13,25 +13,34 @@
 
 // Variables
 var i = 0;
-const nameText 		= document.getElementById('name');
+
+// HTML Element - General
 const otherJobText		= document.getElementById('other-job-role');
 const titleSelect		= document.getElementById('title');
 const colorSelect		= document.getElementById('color');
 const designSelect		= document.getElementById('design');
 const activityFieldset	= document.getElementById('activities');
 const paySelect		= document.getElementById('payment');
+// HTML Element - Validation - GOTO [VALID]
+const nameInput 		= document.getElementById('name');
+const emailInput		= document.getElementById('email');
+const ccInput			= document.getElementById('cc-num');
+const zipInput			= document.getElementById('zip');
+const cvvInput			= document.getElementById('cvv');
 
-const pay				= [];
+// Variable - Payment
+const pay	= [];
 pay.push(document.getElementById('credit-card'));
 pay.push(document.getElementById('paypal'));
 pay.push(document.getElementById('bitcoin'));
-
-// Default
-nameText.focus();
-otherJobText.hidden			= true;
 paySelect.options[1].selected = true; //Option: 1. Credit Card
 pay[1].hidden				= true;
 pay[2].hidden				= true;
+
+// Default
+nameInput.focus();
+otherJobText.hidden	= true;
+
 
 
 // SHOW custom job-title text-field if 'Other' selected as Job Role
@@ -73,7 +82,7 @@ designSelect.addEventListener('change', (e) => {
 
 
 
-// [] Activities
+// [1] Activities
 activityFieldset.addEventListener('change', (e) => {
 	var totalCost = 0;
 	const activityCollection = e.currentTarget.children[1].children;
@@ -115,7 +124,7 @@ activityFieldset.addEventListener('change', (e) => {
 
 
 
-// [] Payments
+// [1] Payments
 paySelect.addEventListener('change', (e) => {
 	const selectedPayment = e.currentTarget.value;
 
@@ -130,5 +139,47 @@ paySelect.addEventListener('change', (e) => {
 
 
 
-// [] Validation
+// [0] Validation GOTO [VALID]
 /*<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
+// Ctrl+F: "HTML Element - Validation" section to add elements e.g.
+// const nameInput = document.getElementById('name');
+
+// Generalized Listener Creator
+function createListener( validator ) {
+	return e => {
+		const text = e.target.value;
+
+		const hint = e.target.parentElement.lastElementChild;
+		const valid = validator(text);
+
+		if(!valid) { hint.style.display = 'inline'; return; }
+		hint.style.display = 'none';
+	}
+}
+
+// Listeners
+nameInput.addEventListener( "input", createListener(isValidName) );
+emailInput.addEventListener( "input", createListener(isValidEmail) );
+ccInput.addEventListener( "input", createListener(isValidCc) );
+zipInput.addEventListener( "input", createListener(isValidZip) );
+cvvInput.addEventListener( "input", createListener(isValidCvv) );
+
+// Validators
+function isValidName( name ) { 
+	const re = /[ \t]+/g;
+
+	// Reformatting
+	name = name.trim();
+	name = name.replace(re, ' ');
+
+	return /^[A-Za-z ]+$/.test( name );
+}
+
+function isValidEmail( email ) 	{ return /^\w+@\w+\b.com\b$/i.test(email); }
+function isValidCc( cc )			{ return /^\d{13,16}$/.test(cc); }
+function isValidZip( zip )		{ return /^\d{5}$/.test(zip); }
+function isValidCvv( cvv )		{ return /^\d{3}$/.test(cvv); }
+
+
+
+
