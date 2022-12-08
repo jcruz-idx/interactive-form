@@ -1,0 +1,34 @@
+//Project Spoiler 1.0.0
+
+//Workflow Example
+//1. Define pseudo-code in comments
+//2. Make ((  notes  )) of selectors, variables that will be used
+
+//Globals
+//const spoilerSpanSlctr = '.spoiler span';
+//const spoilerBttnSlctr = '.spoiler button';
+
+//Floating Event Handler - Tied to Static HTML Parent
+//$(parentSlctr).on( event, childSlctr, ()=>{} );
+//  -//.preventDefault() - Useful method
+//  -[[  MUST use standard function() {} notation for "this" to work ]]
+//  -e.target = this
+//  -[[  Event Delegation  ]]
+$('.spoiler').on('click', 'button', function(e) {
+  $(this).prev().show();   //Show <span>
+  //Using .prev() works well here b/c app is small
+  //Will need alt soln if site is big and changes often
+  $(this).hide();          //Hide <button>
+});
+
+//Create "Reveal Spoiler" button - Out of order to test floating event handler
+const $button = $('<button>Reveal Spoiler</button>');
+$('.spoiler').append($button);
+
+//Hide spoiler text
+$('.spoiler span').hide();
+
+
+
+
+

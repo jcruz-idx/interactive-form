@@ -1,0 +1,295 @@
+/*
+>>
+>>  app.js - userform-regex
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>100
+Project.: userform-regex
+Type....: Learning project (Comment heavy)*/
+
+
+/*
+**
+**    Notes
+*************************************************************************************************100
+
+
+
+sitelist; reference
+*******************
+*******************
+[ ]Email Regex: https://emailregex.com/
+[ ]HTML5 Email: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/email#validation
+
+
+
+videolist team treehouse
+************************
+************************
+-Validating a Username
+-Validating a Password 
+-Validating a Phone Number
+-Validating an Email
+-Using Replace with Captured Groups
+-A Better Telephone Number Validator
+-Reformatting a Telephone Number
+
+
+
+[001] Validating Name
+***************
+***************
+regex  =  /[a-z]+/   =>  true if lowercase present
+          /^[a-z]+$/ =>  true if ONLY lowercase
+
+
+
+[002] Validating Password
+*************************
+*************************
+- "function isValidPassword(password)"
+- NOTE: All required characters can be in any order
+- Use partial matching (i.e. no "^" nor "$") for simple JS logic
+- Regex will need non-consuming lookaheads:
+    Positive: (?=pattern)
+    Negative: (?!pattern)
+
+
+
+CODE: Simple: JS logic, Comment Expand
+--------------------------------
+const b1 =  /[A-Z]/.test(password); //True if uppercase present anywhere
+const b2 =  /[a-z]/.test(password); //True if lowercase present anywhere
+const b3 =   /[\d]/.test(password); //True if digit present anywhere
+const b4 = !/[\s@]/.test(password); //True if NO whitespace OR "@" present anywhere
+
+return b1&&b2&&b3&&b4; //ALL must be true
+
+
+
+CODE: Simple: JS Logic, Concise but Readable
+-----------------------------------
+//  (!!!) Conditional statement MUST START on same line as 'return' keyword
+return  /[A-Z]/.test(password) &&
+        /[a-z]/.test(password) &&
+         /[\d]/.test(password) &&
+       !/[\s@]/.test(password);
+
+
+
+CODE: Complex Regex: Comment Expand
+-----------------------------
+//  s1   -   Non-Consuming Negative Lookahead
+//False if whitespace (/s) or @ is preceded by any character any # of times (0 or more times)
+//    (find any # of times, anywhere); (non-consuming) reset search before next lookahead
+//    (i.e. False if contains /s or @)
+//      "?!"      - Negative lookahead
+//      ".*"      - Any character 0 or more times
+//      "[\s@]"   - Exluded character set
+//  (!!!) NOTE: Double-backslash required because JS removes a single one
+//  [[[  ]]] WHY!?!
+
+//  s2   -   Non-Consuming Positive Lookahead
+//True if [A-Z], [a-z], [\d] is preceded by any character any # of times (0 or more times)
+//    (find any # of times, anywhere); (non-consuming) reset search before next lookahead
+//    (i.e. True if contains a set member)
+//      "?="      - Positive lookahead
+//      ".*"      - Any character 0 or more times
+//      "[~]"     - Required character set
+
+const s1 = '(?!.*[\\s@])';  //Exlude: whitespace (/s), @; NOTE: JS removes single "\" need "\\"
+const s2 = '(?=.*[A-Z])';   //uppercase
+const s3 = '(?=.*[a-z])';   //lowercase
+const s4 = '(?=.*\\d)';     //digit; NOTE: JS removes single "\" need "\\"
+
+//    ---Final ".*" consumes the string; 
+//    ---"^" and "$" for complete match vs infinite, alternate order partial matches
+const s=`^${s1}${s2}${s3}${s4}.*$`;   // Regex: /^(?!.*[\s@])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$/
+const r = new RegExp(s);              // const r = new RegExp(s, 'g');
+
+return r.test(password);
+
+
+
+CODE: Complex Regex: Concise
+----------------------------    
+return /^(?!.*[\s@])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$/g.test(password);
+
+
+
+[003] Validating Phone
+**********************
+**********************
+[[[  ]]] ^~$ for when you want nothing before NOR after match
+
+
+
+[004] .replace(); captured groups
+*********************************
+*********************************
+---() Regex Grouping "captures" strings matched allowing for replacment
+---e.g. Joe Doe => Doe, Joe
+Jargon: () can "group and capture" sets of characters
+Captured in "regex clipboard" with 1-based-indices callable as: $1, $2, $...
+/(\w)\w+(\d)/ - $1=(\w), $2=(\d) if both are captured
+[[[   ]]] Captured regex indices start at 1 (!!!)
+
+str.replace(regexWithGroups, replacement);
+
+where
+"regex" contains groups in (); 
+  1. if groups are found, match is made
+  2. group is captured and given an index from left to right starting at 1
+"replacement" can contain groups captured using "$index" notation
+
+let s = 'abc beluga';
+undefined
+s.replace(/(\w)(\w)(\w)\w+/, '$3 $2 $1');
+'c b a'
+s.replace(/(\w)(\w)(\w)/, '$3 $2 $1');
+'c b a beluga'
+let s1 = '5337';
+s1
+'5337'
+r = /^(\d*)(\d{2})$/;
+/^(\d*)(\d{2})$/
+let s2 = '$$$1.$2'; [[[  ]]]
+s1.replace(r, s2)
+'$53.37'
+
+[[[   ]]] In the replacement string for .replace(), a literal "$" needs to be escaped with another "$",
+    so to print one out in the replacement-string, must declare it with "$$"
+
+[[[  ]]] blur event occurs on an input element when it loses focus*/
+
+
+
+/*
+**
+**    Code Start
+***************************************************************************************************/
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const telephoneInput = document.getElementById("telephone");
+const emailInput = document.getElementById("email");
+
+/**
+ * 
+ * VALIDATORS
+ *  
+ */
+
+// Only lowercase a-z allowed
+function isValidUsername(username) { 
+  return /^[a-z]+$/.test(username); 
+}
+
+//    Must contain a lowercase, uppercase letter and a number (additional exlusion: whitespace, @, #)
+function isValidPassword(password) {
+  
+  //  Regex: Expanded Commentary
+  //  --------------------------
+  //  (?!~) - Negative Lookahead for ~; non-consuming
+  //  (?=~) - Positive Lookahead for ~; non-consuming
+  //  .*    - Anything any number of times (any character 0 or more times)
+    
+  //NOTE: JS string declaration needs a literal "\" escaped by another using "\\"
+  const s1 = '(?!.*[\\s@#])';  // ".*" followed by "\s", "@" or "#"
+  const s2 = '(?=.*[A-Z])';    // ".*" followed by uppercase
+  const s3 = '(?=.*[a-z])';    // ".*" followed by lowercase
+  const s4 = '(?=.*\\d)';      // ".*" followed by digit
+  
+  const s=`${s1}${s2}${s3}${s4}.*`;   // ".*" outside of lookahead consumes string; 
+  const r = new RegExp(s);            // (g)lobal Flag Syntax: const r = new RegExp(s, 'g');
+  //Current Regex: /(?!.*[\s@#])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*/
+  //Original Regex: /^(?!.*[\s@])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$/
+    
+  return r.test(password);
+}
+
+// The telephone number must be in the format of (555) 555-5555
+function isValidTelephone(telephone) {
+  const r = buildPhoneRegex();
+  return r.test(telephone);
+  
+  // //Phone Regex Validation A 
+  // //[[[  ]]] ^~$ for when you want nothing before NOR after match
+  // return /^\(\d{3}\)\ \d{3}-\d{4}$/.test(telephone); 
+}
+
+// Must be a valid email address
+function isValidEmail(email) {
+  //return /^\w+@\w+\.\w{3}$/.test(email);
+  return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email); // TTH Version
+}
+
+/**
+ * 
+ * FORMATTING FUNCTIONS
+ * 
+ */
+
+function formatTelephone(text) {
+  const r = buildPhoneRegex();
+  return text.replace(r, '($1) $2-$3');
+}
+
+/**
+ * 
+ * SET UP EVENTS
+ * 
+ */
+
+function showOrHideTip(show, element) {
+  // show element when show is true, hide when false
+  if (show) {
+    element.style.display = "inherit";
+  } else {
+    element.style.display = "none";
+  }
+}
+
+function createListener(validator) {
+  return e => {
+    const text = e.target.value;
+    const valid = validator(text);
+    const showTip = text !== "" && !valid;
+    const tooltip = e.target.nextElementSibling;
+    showOrHideTip(showTip, tooltip);
+  };
+}
+
+//  Phone Regex Template
+function buildPhoneRegex() {
+  let str = '';
+  
+  const s = [
+    '^',            //      -  Exact matching start
+    '[-+(\\s]*',    // (    -  Consume open parenthesis, whitespace (W.S.)
+    '(\\d{3})',     // 123  -  $1: Capture 3digits
+    '[-+)\\s]*',    // )    -  Consume close parenthesis, W.S.
+    '(\\d{3})',     // 456  -  $2: Capture 3digits
+    '[-+\\s]*',     // -    -  Consume -, W.S.
+    '(\\d{4})',     // 7890 -  $3: Capture 4digits
+    '[\\s]*',       //      -  Consume trailing W.S.
+    '$'             //      -  Exact matching end
+  ];
+  
+  for(let i=0;i<s.length;i++) { str+=s[i]; }
+  
+  return new RegExp(str);
+}
+
+usernameInput.addEventListener("input", createListener(isValidUsername));
+passwordInput.addEventListener("input", createListener(isValidPassword));
+telephoneInput.addEventListener("input", createListener(isValidTelephone));
+emailInput.addEventListener("input", createListener(isValidEmail));
+
+telephoneInput.addEventListener("blur", e => {
+  e.target.value = formatTelephone(e.target.value);
+});
+
+/*
+**
+**    Code End
+***************************************************************************************************/

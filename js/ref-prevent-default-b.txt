@@ -1,0 +1,243 @@
+/*
+// newsfeed - app.js
+////////////////////////////////////////////////////////////////////////////////////////////
+Project.: Newsfeed Prototype
+Desc....: jQuery Specific Selectors
+From....: TTH
+Filename: 
+Version.: 
+Note....: 
+Dev.....: 
+Copy....: 
+Spec....: 
+Tags....:
+Detail..: 
+Archive.: 
+Pcode...:
+////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//         8.     Use jQuery with a CDN (Content Delivery Network)
+////////////////////////////////////////////////////////////////////////////////////////////
+Notes
+--
+    1.     ~
+    2.     ~
+//////////////////////////////////////////////////////////////////////////////////////////*/
+const $odd = $('a:odd');
+const $secureLinks = $('a[href^="https://"]');
+const $pdfs = $('a[href$=".pdf"]');
+const $links = $('#links');
+const $checkboxHTML = $('<label><input type="checkbox">Allow PDF downloads</label>');
+
+//Link Settings
+$secureLinks
+  .attr('target', '_blank')
+  .addClass('secure');
+
+//.PDF Settings
+$pdfs
+  .attr('download', true)
+  .addClass('pdf')
+  .on('click', (e) => {
+    if( $(':checked').length === 0) {
+      e.preventDefault();
+      alert('Check "Allow PDF downloads" checkbox.');
+    }
+});
+
+//Add checkbox
+$links.append($checkboxHTML);
+
+//Show link text on page
+$('a').each( function() { 
+  const url = $(this).attr('href');
+  $(this).parent().append(`(${url})`);
+});
+
+
+// /*//////////////////////////////////////////////////////////////////////////////////////////
+// //         7.     Looping through a jQuery collection :video{tth}.
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// Notes
+// --
+//     1.    Template Literals
+//     2.    String Interpolation
+//     3.    Iterating Over jQuery Objects
+//           --    .each()
+
+// --    Standard for(let i=0;i<max;i++){ console.log(x) = array[i]; } loop
+// --    jQuery .each()    --    $jQueryCollection.each( (index, item)=>{} )
+//       --    Runs as many times as there are items in the collection
+      
+//       CODE
+//       //    Create a jQuery collection of all anchor elements.
+//       //    For each item in the collection, pass the index and element itself into function
+//       //      for use w/in the function
+//       $('a').each( (index, elementInCollection)=>{ 
+//         console.log(index, $(elementInCollection).attr('href'));
+//       });
+
+// --    Looping over / iterating over a collection of things is a common programming pattern
+//       (!!!) Get used to it!
+
+// Pseudocode:
+// 1.    [ x ] Log out href for each link on the page
+// //////////////////////////////////////////////////////////////////////////////////////////*/
+
+// const $odd = $('a:odd');
+// const $secureLinks = $('a[href^="https://"]');
+// const $pdfs = $('a[href$=".pdf"]');
+// const $links = $('#links');
+// const $checkboxHTML = $('<label><input type="checkbox">Allow PDF downloads</label>');
+
+// $secureLinks
+//   .attr('target', '_blank')
+//   .addClass('secure');
+
+// $pdfs
+//   .attr('download', true)
+//   .addClass('pdf')
+//   .on('click', (e) => {
+//     if( $(':checked').length === 0) {
+//       e.preventDefault();
+//       alert('Check "Allow PDF downloads" checkbox.');
+//     }
+// });
+
+// $links.append($checkboxHTML);
+
+// //    "this" refers to the current item in the jQuery Collection pointed to by loop 
+// //    -- NOTE: Need standard function declaration to use "this" since arrow notation
+// //        does not work as a constructor that makes a "this"
+// $('a').each( function() { 
+//   const url = $(this).attr('href');
+//   $(this).parent().append(`(${url})`);
+// });
+
+// //     Explicit expression of both arguments
+// $('a').each( (i, link)=>{ 
+//   const url = $(link).attr('href');
+//   $(link).parent().append(`(${url})`);
+// });
+
+// //    Create a jQuery collection of all anchor elements.
+// //    For each item in the collection, pass the index and element itself into function
+// $('a').each( (index, elementInCollection)=>{ 
+//   console.log(index, $(elementInCollection).attr('href'));
+// });
+
+// /*//////////////////////////////////////////////////////////////////////////////////////////
+// //         6.   [] Stopping the Browser's Default Behavior :tth-video.
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// Notes
+// --.preventDefault() - 
+//     1.     often used for forms.  browser's send info to browser and reload page.good idea to prevent this for custom form submission behavior
+//     2.     stop browser from automatically following a link
+// --':checked' - pseudoselector.  $(':checked') returns a "jQuery Collection" is array-like
+//     1.     Can access items in array by index
+//     2.     has a length property
+// --Challenge: Make checkbox and parent label dynamic
+// //////////////////////////////////////////////////////////////////////////////////////////*/
+
+// const $odd = $('a:odd');
+// const $secureLinks = $('a[href^="https://"]');
+// const $pdfs = $('a[href$=".pdf"]');
+// const $links = $('#links');
+// const $checkboxHTML = $('<label><input type="checkbox">Allow PDF downloads</label>');
+
+// $secureLinks
+//   .attr('target', '_blank')
+//   .addClass('secure');
+
+// $pdfs
+//   .attr('download', true)
+//   .addClass('pdf')
+//   .on('click', (e) => {
+//     if( $(':checked').length === 0) {
+//       e.preventDefault();
+//       alert('Check "Allow PDF downloads" checkbox.');
+//     }
+// });
+// // Must add boolean in .attr('download', true) for chaining to work
+// // Arrow notation b/c not using "this"
+
+// $links.append($checkboxHTML);
+
+// /*//////////////////////////////////////////////////////////////////////////////////////////
+// //         5.  Changing Element Styles and Classes
+// //             Dynamically Add CSS Classes to an Element
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// Notes
+
+// .css() - gSetter
+// .css(‘cssProperty’) //Getter
+// .css(‘cssProperty’, ‘propertyValue’) //Setter
+// jQuery CSS Styling - Dispreferred. Try to keep styles in CSS file. (unobtrusive)
+// $odd.css('backgroundColor', 'lightgrey');
+// background-color: In CSS prop, HTML class [[  Kabob-Case  ]] || JS camelCase
+
+// Class Methods
+// $('selector-0').classMethod('className');
+// -  .addClass();
+// -  .removeClass();
+// -  .toggleClass();
+// //////////////////////////////////////////////////////////////////////////////////////////*/
+
+// const $odd = $('a:odd');
+// const $secureLinks = $('a[href^="https://"]');
+// const $pdfs = $('a[href$=".pdf"]');
+
+// $secureLinks
+//   .attr('target', '_blank')
+//   .addClass('secure');
+
+// $pdfs
+//   .attr('download', true)
+//   .addClass('pdf');
+// //Must add boolean value to download attr for chaining to work
+
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// //          4. Changing Element Properties/Attributes
+// //              .attr() - Similar to .text(), .html(), but takes 2 arg
+// //              Set all secure links to open in new window
+// //                Set attribute "target=blank"
+// //
+// //              $('selector').attr('attrName', 'attrValue');
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// const $odd = $('a:odd');
+// const $secureLinks = $('a[href^="https://"]');
+// const $pdfs = $('a[href$=".pdf"]');
+
+// $secureLinks.attr('target', '_blank');
+// // "_blank" - new tab every time
+// // "blank"  - only 1st clicked link in new tab, future links with "blank" open in that tab
+
+// $pdfs.attr('download');
+// // downloadAttr values are boolean.  To disable, use .attr('download', false)
+
+
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// //          3. Ends With - $('tagname[attrName$="substring"]')
+// //              Find all "tagnames" with "attrName" that "$" (end with) "substring"
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// const $odd = $('a:odd');
+// const $secureLinks = $('a[href^="https://"]');
+// const $pdfs = $('a[href$=".pdf"]');
+
+// $pdfs.hide();
+
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// //          2. Starts With - $('tagname[attrName^="substring"]')
+// //              Find all "tagnames" with "attrName" that "^" (start with) "substring"
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// const $odd = $('a:odd');
+// const $secureLinks = $('a[href^="https://"]');
+
+// $secureLinks.hide();
+
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// //          1. :odd
+// ////////////////////////////////////////////////////////////////////////////////////////////
+// const $odd = $('a:odd');   //jQuery specific "addon" selector :odd
+// $odd.hide();
