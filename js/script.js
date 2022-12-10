@@ -19,14 +19,14 @@
  */
 
 
-/** @description - Global Variables 
- * @type {object} emailError - Tracks email-<input> error-type
- * @type {string} blankMsg - email-<input> error message for blank entry
- * @type {string} formatMsg - email-<input> error-message for bad format
-*/
+// Global Variables
+/** @type {Number}} i - Integer index */
 var i = 0;
+/** @type {Object} emailError - Tracks email-<input> error-type */
 const emailError = {};
+/** @type {String} blankMsg - email-<input> error message for blank entry */
 const blankMsg	= 'Email address cannot be left blank';
+/** @type {String} formatMsg - email-<input> error-message for bad format */
 const formatMsg = 'Email address must be formatted correctly';
 
 /** @description - Global HTML Elements */
