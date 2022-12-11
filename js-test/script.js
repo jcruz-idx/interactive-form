@@ -1,5 +1,3 @@
-// (at)ts-check
-
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>100
 //	
 //	script.js
@@ -13,126 +11,87 @@
 //	Note....:	
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
+/**
+ * @description - Treehouse Techdegree: FSJS Project 3 - Interactive Form
+ * 
+ * @author Joel Cruz
+ * @since 1.0.0
+ */
 
 
 // Global Variables
-/////////////////////////////////////////////////////////////////////////////////////////////////100
-/** Integer index
- * @type {Number} i */
+/** @type {Number} i - Integer index */
 var i = 0;
-
-/** Track email-input error-type 
- * @type {Object} emailError */
+/** @type {Object} emailError - Tracks email-<input> error-type */
 const emailError = {};
-
-/** Error message for email-input error: blank entry
- * @type {String} blankMsg */
+/** @type {String} blankMsg - email-<input> error message for blank entry */
 const blankMsg	= 'Email address cannot be left blank';
-
-/** Error message for email-input error: bad format
- * @type {String} formatMsg */
+/** @type {String} formatMsg - email-<input> error-message for bad format */
 const formatMsg = 'Email address must be formatted correctly';
 
+/** @description - Global HTML Elements */
+const otherJobInput		= document.getElementById('other-job-role');
+const titleSelect		= document.getElementById('title');
+const colorSelect		= document.getElementById('color');
+const designSelect		= document.getElementById('design');
+const activityFieldset	= document.getElementById('activities');
+const activityBox		= document.getElementById('activities-box');
+const paySelect		= document.getElementById('payment');
+const form			= document.querySelector('form');
+const activityCollection = document.getElementById('activities-box').children;
 
-
-// Global HTML Elements
-/////////////////////////////////////////////////////////////////////////////////////////////////100
-/** Text-input: Optional, custom job title input
- * @type {HTMLInputElement} otherJobInput */
-const otherJobInput = document.getElementById('other-job-role');
-
-/** Job title select
- * @type {HTMLSelectElement} titleSelect */
-const titleSelect = document.getElementById('title');
-
-/** Color select
- * @type {HTMLSelectElement} colorSelect */
-const colorSelect = document.getElementById('color');
-
-/** T-Shirt design select
- * @type {HTMLSelectElement} designSelect */
-const designSelect = document.getElementById('design');
-
-/** Activity fieldset
- * @type {HTMLFieldSetElement} activityFieldSet */
-const activityFieldset = document.getElementById('activities');
-
-/** Activity container-div: Contains all activity elements
- * @type {HTMLDivElement} activityDiv */
-const activityDiv = document.getElementById('activities-box');
-
-/** Each label holds one activity, i.e. all elements associated with one activity, notably, the checkbox-inputs
- * @type {HTMLCollection<HTMLLabelElement>} activityCollection */
-const activityCollection = activityDiv.children;
-
-/** Payment select
- * @type {HTMLSelectElement} paySelect */
-const paySelect = document.getElementById('payment');
-
-/** Form
- * @type {HTMLFormElement} form */
-const form = document.querySelector('form');
-
-// Text-input elements for validation
-/////////////////////////////////////////////////////////////////////////////////////////////////100
-
-/** Text-input: Name
- * @type {HTMLInputElement} nameInput */
-const nameInput = document.getElementById('name');
-
-/** Email-input
- * @type {HTMLInputElement} emailInput */
-const emailInput = document.getElementById('email');
-
-/** Text-input: Credit card
- * @type {HTMLInputElement} ccInput */
-const ccInput = document.getElementById('cc-num');
-
-/** Text-input: Zip code
- * @type {HTMLInputElement} zipInput */
-const zipInput = document.getElementById('zip');
-
-/** Text-input: CVV
- * @type {HTMLInputElement} cvvInput */
-const cvvInput = document.getElementById('cvv');
+/** @description - Global <input> Elements for Validation */
+const nameInput 		= document.getElementById('name');
+const emailInput		= document.getElementById('email');
+const ccInput			= document.getElementById('cc-num');
+const zipInput			= document.getElementById('zip');
+const cvvInput			= document.getElementById('cvv');
 
 /** 
- * Each container-div holds one payment option, i.e. all elements associated with one payment option. (index. option):
- * 1. Credit Card
- * 2. Paypal
- * 3. Bitcoin
- * @type {Array<HTMLDivElement>} pay */
+ * @description - Payment <div> Elements / Containers 
+ * @type {Array} pay - Array of <div>
+ * @type {HTMLDivElement} pay[i] - <div> container of payment option: 1. Credit Card, 2. Paypal, 3. Bitcoin
+*/
 const pay	= [];
 pay.push(document.getElementById('credit-card'));
 pay.push(document.getElementById('paypal'));
 pay.push(document.getElementById('bitcoin'));
-
-// Default: select credit card option; Hide other payment containers
 paySelect.options[1].selected = true;
-pay[1].hidden = true;
-pay[2].hidden = true;
+pay[1].hidden				= true;
+pay[2].hidden				= true;
 
-// Site Defaults
+/** @description - Site Defaults */
 nameInput.focus();
-otherJobInput.hidden = true;
+otherJobInput.hidden	= true;
 
-// Default (until t-shirt design selected)
-//		1. Disable color selection
-//		2. Hide color options
+/** 
+ * @description - Default - While <select id='design'> not set: 
+ * 1. Disable <select id='color'>
+ * 2. hide options
+ * 
+ * @type 		{HTMLSelectElement}	colorSelect 		- Sets t-shirt color
+ * @property 	{HTMLOptionElement}	colorSelect.options	- Color options
+*/
 colorSelect.disabled = true;
 for(const x of colorSelect.options) { x.hidden = true; }
 
 
 /**
- * Job: Listen for change-in job-title select-input 
- *  
- * @function
+ * @description - Job: Listen for change-in <select id='title'>
+ * 
+ * @module
  * @type {HTMLSelectElement} titleSelect - Change event target.  Sets job title.
- * @type {HTMLInputElement} otherJobInput - Show/hide text-input per titleSelect
- * @param {titleSelect~event:change} e - Change event from titleSelect
- * @listens titleSelect~event:change
+ * @event event:change
  */
 titleSelect.addEventListener('change', 
+	/**
+	 * @description - If 'other' option selected in titleSelect, show <input type='text' id='other-job-role'>.  Otherwise hide it.
+	 * 
+	 * @method
+	 * @type {HTMLInputElement} otherJobInput - Show/hide text-input per titleSelect
+	 * @param {module:titleSelect~event:change} e - Change event from titleSelect
+	 * @listens module:titleSelect~event:change
+	 */
 	(e) => {
 		const selectedTitle = e.currentTarget.value;
 
@@ -149,6 +108,7 @@ titleSelect.addEventListener('change',
 /**
  * @description - T-Shirt Design: Listen for change-in <select id='design'>
  * 
+ * @module
  * @type {HTMLSelectElement} designSelect 	- Change event target
  * @property {string} designSelect.value	- 'js puns', 'heart js'
  * @event event:change
@@ -186,6 +146,7 @@ designSelect.addEventListener('change',
 /**
  * @description - Activities: Listen for change-in activity-<input type='checkbox'>.  In
  * 
+ * @module
  * @type {HTMLFieldSetElement} activityFieldset - Change event target; Activity section container
  * @event event:change
  */
@@ -267,6 +228,7 @@ activityFieldset.addEventListener('change',
  * 	2			paypal					1	Paypal
  * 	3			bitcoin					2	Bitcoin
  * 
+ * @module
  * @type {HTMLSelectElement} paySelect - Change event target
  * @event event:change
  */
@@ -377,13 +339,14 @@ cvvInput.addEventListener	( "input", createListener(isValidCvv) );
 
 
 // Validator function declarations
+
 /**
  * @description Validator - argument for generalized createListener() function
  * @function isValidName
- * @param {string} name 
- * @returns {bool}
+ * @param {String} name 
+ * @returns {Boolean}
  */
-function isValidName( name ) { 
+function isValidName(name) { 
 	const re = /[ \t]+/g;
 
 	// Reformatting
@@ -476,8 +439,8 @@ form.addEventListener('submit',
 	
 	// Special validator
 	if(!isValidActivitySelection()) { 
-		failure(e, activityDiv);
-		if(fail===false) { activityDiv.lastElementChild.firstElementChild.focus(); }
+		failure(e, activityBox);
+		if(fail===false) { activityBox.lastElementChild.firstElementChild.focus(); }
 		fail = true;
 	}
 

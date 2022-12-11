@@ -2,7 +2,7 @@
 
 <dl>
 <dt><a href="#i">i</a> : <code>Number</code></dt>
-<dd><p>Integer index</p>
+<dd><p>i - Integer index</p>
 </dd>
 </dl>
 
@@ -10,70 +10,35 @@
 
 <dl>
 <dt><a href="#emailError">emailError</a> : <code>Object</code></dt>
-<dd><p>Track email-input error-type</p>
+<dd><p>emailError - Tracks email-<input> error-type</p>
 </dd>
 <dt><a href="#blankMsg">blankMsg</a> : <code>String</code></dt>
-<dd><p>Error message for email-input error: blank entry</p>
+<dd><p>blankMsg - email-<input> error message for blank entry</p>
 </dd>
 <dt><a href="#formatMsg">formatMsg</a> : <code>String</code></dt>
-<dd><p>Error message for email-input error: bad format</p>
+<dd><p>formatMsg - email-<input> error-message for bad format</p>
 </dd>
-<dt><a href="#otherJobInput">otherJobInput</a> : <code>HTMLInputElement</code></dt>
-<dd><p>Text-input: Optional, custom job title input</p>
+<dt><a href="#otherJobInput">otherJobInput</a></dt>
+<dd><ul>
+<li>Global HTML Elements</li>
+</ul>
 </dd>
-<dt><a href="#titleSelect">titleSelect</a> : <code>HTMLSelectElement</code></dt>
-<dd><p>Job title select</p>
+<dt><a href="#nameInput">nameInput</a></dt>
+<dd><ul>
+<li>Global <input> Elements for Validation</li>
+</ul>
 </dd>
-<dt><a href="#colorSelect">colorSelect</a> : <code>HTMLSelectElement</code></dt>
-<dd><p>Color select</p>
-</dd>
-<dt><a href="#designSelect">designSelect</a> : <code>HTMLSelectElement</code></dt>
-<dd><p>T-Shirt design select</p>
-</dd>
-<dt><a href="#activityFieldset">activityFieldset</a> : <code>HTMLFieldSetElement</code></dt>
-<dd><p>Activity fieldset</p>
-</dd>
-<dt><a href="#activityDiv">activityDiv</a> : <code>HTMLDivElement</code></dt>
-<dd><p>Activity container-div: Contains all activity elements</p>
-</dd>
-<dt><a href="#activityCollection">activityCollection</a> : <code>HTMLCollection.&lt;HTMLLabelElement&gt;</code></dt>
-<dd><p>Each label holds one activity, i.e. all elements associated with one activity, notably, the checkbox-inputs</p>
-</dd>
-<dt><a href="#paySelect">paySelect</a> : <code>HTMLSelectElement</code></dt>
-<dd><p>Payment select</p>
-</dd>
-<dt><a href="#form">form</a> : <code>HTMLFormElement</code></dt>
-<dd><p>Form</p>
-</dd>
-<dt><a href="#nameInput">nameInput</a> : <code>HTMLInputElement</code></dt>
-<dd><p>Text-input: Name</p>
-</dd>
-<dt><a href="#emailInput">emailInput</a> : <code>HTMLInputElement</code></dt>
-<dd><p>Email-input</p>
-</dd>
-<dt><a href="#ccInput">ccInput</a> : <code>HTMLInputElement</code></dt>
-<dd><p>Text-input: Credit card</p>
-</dd>
-<dt><a href="#zipInput">zipInput</a> : <code>HTMLInputElement</code></dt>
-<dd><p>Text-input: Zip code</p>
-</dd>
-<dt><a href="#cvvInput">cvvInput</a> : <code>HTMLInputElement</code></dt>
-<dd><p>Text-input: CVV</p>
-</dd>
-<dt><a href="#pay">pay</a> : <code>Array.&lt;HTMLDivElement&gt;</code></dt>
-<dd><p>Each container-div holds one payment option, i.e. all elements associated with one payment option. (index. option):</p>
-<ol>
-<li>Credit Card</li>
-<li>Paypal</li>
-<li>Bitcoin</li>
-</ol>
+<dt><a href="#pay">pay</a> : <code>Array</code></dt>
+<dd><ul>
+<li>Payment <div> Elements / Containers</li>
+</ul>
 </dd>
 </dl>
 
 ## Functions
 
 <dl>
-<dt><a href="#isValidName">isValidName(name)</a> ⇒ <code>bool</code></dt>
+<dt><a href="#isValidName">isValidName(name)</a> ⇒ <code>Boolean</code></dt>
 <dd><p>Validator - argument for generalized createListener() function</p>
 </dd>
 <dt><a href="#isValidEmail">isValidEmail(email)</a> ⇒ <code>bool</code></dt>
@@ -99,6 +64,11 @@
 ## Events
 
 <dl>
+<dt><a href="#event_change">"event:change"</a></dt>
+<dd><ul>
+<li>Job: Listen for change-in <select id='title'></li>
+</ul>
+</dd>
 <dt><a href="#event_change">"event:change"</a></dt>
 <dd><ul>
 <li>T-Shirt Design: Listen for change-in <select id='design'></li>
@@ -139,127 +109,55 @@ Else hide hints, reset messages, reset flags</li>
 <a name="i"></a>
 
 ## i : <code>Number</code>
-Integer index
+i - Integer index
 
 **Kind**: global variable  
 <a name="emailError"></a>
 
 ## emailError : <code>Object</code>
-Track email-input error-type
+emailError - Tracks email-<input> error-type
 
 **Kind**: global constant  
 <a name="blankMsg"></a>
 
 ## blankMsg : <code>String</code>
-Error message for email-input error: blank entry
+blankMsg - email-<input> error message for blank entry
 
 **Kind**: global constant  
 <a name="formatMsg"></a>
 
 ## formatMsg : <code>String</code>
-Error message for email-input error: bad format
+formatMsg - email-<input> error-message for bad format
 
 **Kind**: global constant  
 <a name="otherJobInput"></a>
 
-## otherJobInput : <code>HTMLInputElement</code>
-Text-input: Optional, custom job title input
-
-**Kind**: global constant  
-<a name="titleSelect"></a>
-
-## titleSelect : <code>HTMLSelectElement</code>
-Job title select
-
-**Kind**: global constant  
-<a name="colorSelect"></a>
-
-## colorSelect : <code>HTMLSelectElement</code>
-Color select
-
-**Kind**: global constant  
-<a name="designSelect"></a>
-
-## designSelect : <code>HTMLSelectElement</code>
-T-Shirt design select
-
-**Kind**: global constant  
-<a name="activityFieldset"></a>
-
-## activityFieldset : <code>HTMLFieldSetElement</code>
-Activity fieldset
-
-**Kind**: global constant  
-<a name="activityDiv"></a>
-
-## activityDiv : <code>HTMLDivElement</code>
-Activity container-div: Contains all activity elements
-
-**Kind**: global constant  
-<a name="activityCollection"></a>
-
-## activityCollection : <code>HTMLCollection.&lt;HTMLLabelElement&gt;</code>
-Each label holds one activity, i.e. all elements associated with one activity, notably, the checkbox-inputs
-
-**Kind**: global constant  
-<a name="paySelect"></a>
-
-## paySelect : <code>HTMLSelectElement</code>
-Payment select
-
-**Kind**: global constant  
-<a name="form"></a>
-
-## form : <code>HTMLFormElement</code>
-Form
+## otherJobInput
+- Global HTML Elements
 
 **Kind**: global constant  
 <a name="nameInput"></a>
 
-## nameInput : <code>HTMLInputElement</code>
-Text-input: Name
-
-**Kind**: global constant  
-<a name="emailInput"></a>
-
-## emailInput : <code>HTMLInputElement</code>
-Email-input
-
-**Kind**: global constant  
-<a name="ccInput"></a>
-
-## ccInput : <code>HTMLInputElement</code>
-Text-input: Credit card
-
-**Kind**: global constant  
-<a name="zipInput"></a>
-
-## zipInput : <code>HTMLInputElement</code>
-Text-input: Zip code
-
-**Kind**: global constant  
-<a name="cvvInput"></a>
-
-## cvvInput : <code>HTMLInputElement</code>
-Text-input: CVV
+## nameInput
+- Global <input> Elements for Validation
 
 **Kind**: global constant  
 <a name="pay"></a>
 
-## pay : <code>Array.&lt;HTMLDivElement&gt;</code>
-Each container-div holds one payment option, i.e. all elements associated with one payment option. (index. option):1. Credit Card2. Paypal3. Bitcoin
+## pay : <code>Array</code>
+- Payment <div> Elements / Containers
 
 **Kind**: global constant  
 <a name="isValidName"></a>
 
-## isValidName(name) ⇒ <code>bool</code>
+## isValidName(name) ⇒ <code>Boolean</code>
 Validator - argument for generalized createListener() function
 
 **Kind**: global function  
 
 | Param | Type |
 | --- | --- |
-| name | <code>string</code> | 
+| name | <code>String</code> | 
 
 <a name="isValidEmail"></a>
 
@@ -324,6 +222,12 @@ Verify that at least 1 activity is selected
 
 **Kind**: global function  
 **Returns**: <code>HTMLInputElement</code> - activityInput - Activity <input type='checkbox'><code>HTMLLabelElement</code> - activityLabel - activityInput container<code>HTMLCollection</code> - activityCollection - activityLabel collection<code>bool</code>  
+<a name="event_change"></a>
+
+## "event:change"
+- Job: Listen for change-in <select id='title'>
+
+**Kind**: event emitted  
 <a name="event_change"></a>
 
 ## "event:change"
