@@ -1,4 +1,5 @@
 // (at)ts-check
+// real-time error messages
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>100
 //	
@@ -21,7 +22,7 @@
  * @type {Number} i */
 var i = 0;
 
-/** Track email-input error-type 
+/** Track email-input error-type using blankMsg, formatMsg strings
  * @type {Object} emailError */
 const emailError = {};
 
@@ -42,7 +43,8 @@ const formatMsg = 'Email address must be formatted correctly';
 const otherJobInput = document.getElementById('other-job-role');
 
 /** Job title select
- * @type {HTMLSelectElement} titleSelect */
+ * @type {HTMLSelectElement} titleSelect 
+ * @fires titleSelectChange */
 const titleSelect = document.getElementById('title');
 
 /** Color select
@@ -50,11 +52,13 @@ const titleSelect = document.getElementById('title');
 const colorSelect = document.getElementById('color');
 
 /** T-Shirt design select
- * @type {HTMLSelectElement} designSelect */
+ * @type {HTMLSelectElement} designSelect 
+ * @fires designSelectChange */
 const designSelect = document.getElementById('design');
 
 /** Activity fieldset
- * @type {HTMLFieldSetElement} activityFieldSet */
+ * @type {HTMLFieldSetElement} activityFieldSet 
+ * @fires activityChange */
 const activityFieldset = document.getElementById('activities');
 
 /** Activity container-div: Contains all activity elements
@@ -66,7 +70,8 @@ const activityDiv = document.getElementById('activities-box');
 const activityCollection = activityDiv.children;
 
 /** Payment select
- * @type {HTMLSelectElement} paySelect */
+ * @type {HTMLSelectElement} paySelect 
+ * @fires paySelectChange */
 const paySelect = document.getElementById('payment');
 
 /** Form
@@ -122,18 +127,20 @@ otherJobInput.hidden = true;
 colorSelect.disabled = true;
 for(const x of colorSelect.options) { x.hidden = true; }
 
+/**
+ * Change in title select element
+ * @event titleSelectChange */
 
 /**
- * Job: Listen for change-in job-title select-input 
- *  
+ * If 'other' job-title is selected, show and focus() on 'other-job-role' text-input element, else keep it hidden
+ * @name titleSelectListener
  * @function
- * @type {HTMLSelectElement} titleSelect - Change event target.  Sets job title.
- * @type {HTMLInputElement} otherJobInput - Show/hide text-input per titleSelect
- * @param {titleSelect~event:change} e - Change event from titleSelect
- * @listens titleSelect~event:change
- */
+ * @param {Event} titleSelectChange
+ * @listens titleSelectChange */
 titleSelect.addEventListener('change', 
 	(e) => {
+		/** Job-title from select element
+		 * @type {String} selectedTitle */
 		const selectedTitle = e.currentTarget.value;
 
 		if( selectedTitle === 'other' ) { 
@@ -144,144 +151,122 @@ titleSelect.addEventListener('change',
 		otherJobInput.hidden = true;
 	})
 
-
+/**
+ * Change in design select element
+ * @event designSelectChange */
 
 /**
- * @description - T-Shirt Design: Listen for change-in <select id='design'>
- * 
- * @type {HTMLSelectElement} designSelect 	- Change event target
- * @property {string} designSelect.value	- 'js puns', 'heart js'
- * @event event:change
- */
-designSelect.addEventListener('change', 
-	/**
-	 * @description - If designSelect option set:
-	 * 1. Change <select id='color'> displayed message (option[0].textContent)
-	 * 2. Focus on <select id='color'>
-	 * 3. Enable color options available for selected t-shirt design
-	 * 
-	 * @method
-	 * @type {HTMLSelectElement} colorSelect - Show/hide options per designSelect
-	 * @type {string} selectedDesign - 'js puns', 'heart js'
-	 * @param {module:designSelect~event:change} e - Change event from designSelect
-	 * @listens module:designSelect~event:change
-	 */
-	(e) => {
-		const selectedDesign = e.currentTarget.value; // 'js puns' or 'heart js'
+ * If a design select option is set:
+ * 1. Change color-select dispalyed message (option[0].textContent) to "Select color:"
+ * 2. Focus() on color-select
+ * 3. Enable color options available for selected t-shirt design
+ * @name designSelectListener
+ * @function
+ * @param {Event} designSelectChange
+ * @listens designSelectChange */
+designSelect.addEventListener('change', (e) => {
+	/** T-Shirt design type from design select element: 'js puns' or 'heart js'
+	 * @type {String} selectedDesign */
+	const selectedDesign = e.currentTarget.value;
 
-		// Enable, Focus, Change Message
-		colorSelect.disabled = false;
-		colorSelect.focus();
-		colorSelect.selectedIndex = 0;
-		colorSelect.options[0].textContent = 'Select a color';
+	// Enable, Focus, Change Message
+	colorSelect.disabled = false;
+	colorSelect.focus();
+	colorSelect.selectedIndex = 0;
+	colorSelect.options[0].textContent = 'Select a color';
 
-		// Enable color options
-		for( const x of colorSelect.options ) {
-			if( x.dataset.theme === `${selectedDesign}` ) { x.hidden = false; } 
-			else { x.hidden = true; }
-		}
-	})
+	// Enable color options
+	for( const x of colorSelect.options ) {
+		if( x.dataset.theme === `${selectedDesign}` ) { x.hidden = false; } 
+		else { x.hidden = true; }
+	}
+})
 
 
-/**
- * @description - Activities: Listen for change-in activity-<input type='checkbox'>.  In
- * 
- * @type {HTMLFieldSetElement} activityFieldset - Change event target; Activity section container
- * @event event:change
- */
-activityFieldset.addEventListener('change', 
-	/** 
-	 * @description - If change (check or uncheck) occurs on an activityInput:
-	 * 1. Initialize: Reset cost to $0. Enable all checkbox-inputs.
-	 * 2. If one activityInput is checked:
-	 * 		a. Add price to total cost
-	 * 		b. Cross-reference against other activities; disable time-conflicting ones
-	 * 
-	 * @method
-	 * @type {HTMLInputElement} activityInput - Activity checkbox
-	 * @type {HTMLLabelElement} activityLabel - activityInput container
-	 * @type {HTMLCollection} activityCollection - activityLabel collection
-	 * @param {module:activityFieldset~event:change} e - Change event from activityFieldset
-	 * @listens module:activityFieldset~event:change
-	 */
-	(e) => {
-		// Initialize variables
-		var activityLabel1, activityLabel2, activityInput1, activityInput2;
-		var totalCost = 0;
-		//const activityFieldset = e.currentTarget;
-		const activityCollection = e.currentTarget.children[1].children;
 
-		// Reset disabled flags
-		for( activityLabel1 of activityCollection ) {
-			activityInput1 = activityLabel1.firstElementChild;
+/** Change in activity fieldset
+ * @event activityChange */
 
-			activityInput1.disabled = false;
-			activityLabel1.classList.remove('disabled');
-		}
+/** If change (check or uncheck) occurs on any activity checkbox-input:
+ * 1. Re-initialize: (1) Reset total cost to $0, (2) Enable all checkbox-inputs
+ * 2. Find a checked input: (1) Add price to total cost, (2) Disable other activities if time-conflicting
+ * @name activityListener
+ * @function
+ * @param {Event} activityChange
+ * @listens activityChange */
+activityFieldset.addEventListener('change', (e) => {
+	// Initialize variables
+	var activityLabel1, activityLabel2, activityInput1, activityInput2;
+	var totalCost = 0;
 
-		// If activityInput is checked: 1. Add price to cost, 2. Cross-reference against all other activities and disable time-conflicting ones
-		for( activityLabel1 of activityCollection ) {
-			activityInput1 = activityLabel1.firstElementChild;
+	const activityCollection = e.currentTarget.children[1].children;
+
+	// Reset disabled flags
+	for( activityLabel1 of activityCollection ) {
+		activityInput1 = activityLabel1.firstElementChild;
+
+		activityInput1.disabled = false;
+		activityLabel1.classList.remove('disabled');
+	}
+
+	// If activityInput is checked: 1. Add price to cost, 2. Cross-reference against all other activities and disable time-conflicting ones
+	for( activityLabel1 of activityCollection ) {
+		activityInput1 = activityLabel1.firstElementChild;
 
 
-			if( activityInput1.checked === true ) { 
-				totalCost+=parseInt(activityInput1.dataset.cost);
-				
-				// Cross-reference
-				for( activityLabel2 of activityCollection ) {
-					activityInput2 = activityLabel2.firstElementChild;
+		if( activityInput1.checked === true ) { 
+			totalCost+=parseInt(activityInput1.dataset.cost);
+			
+			// Cross-reference
+			for( activityLabel2 of activityCollection ) {
+				activityInput2 = activityLabel2.firstElementChild;
 
-					// Omit same name; Check day and time
-					if(	(activityInput2.name) !== (activityInput1.name) &&
-						(activityInput2.dataset.dayAndTime) === 
-						(activityInput1.dataset.dayAndTime) ){
-								activityInput2.disabled = true;
-								activityLabel2.classList.add('disabled');
-							}
-				}
+				// Omit same name; Check day and time
+				if(	(activityInput2.name) !== (activityInput1.name) &&
+					(activityInput2.dataset.dayAndTime) === 
+					(activityInput1.dataset.dayAndTime) ){
+							activityInput2.disabled = true;
+							activityLabel2.classList.add('disabled');
+						}
 			}
 		}
+	}
 
-		// Print cost
-		const costParagraph = document.getElementById('activities-cost');
-		costParagraph.textContent = `Total: $${totalCost}`;
+	// Print cost
+	const costParagraph = document.getElementById('activities-cost');
+	costParagraph.textContent = `Total: $${totalCost}`;
 
-		// Validation
-		if(totalCost===0) {
-			activityFieldset.classList.remove('valid');
-			activityFieldset.classList.add('not-valid');
-			activityFieldset.lastElementChild.style.display='inline';
-			return;
-		}
-		activityFieldset.classList.remove('not-valid');
-		activityFieldset.classList.add('valid');
-		activityFieldset.lastElementChild.style.display='none';
-	})
+	// Validation
+	if(totalCost===0) {
+		activityFieldset.classList.remove('valid');
+		activityFieldset.classList.add('not-valid');
+		activityFieldset.lastElementChild.style.display='inline';
+		return;
+	}
+	activityFieldset.classList.remove('not-valid');
+	activityFieldset.classList.add('valid');
+	activityFieldset.lastElementChild.style.display='none';
+})
 
 
 
-/**
- * @description - Payments: Listen for change-in <select id='payment'>.
- * 	Select Index	paySelect.value/pay[i].id	i	Type
- * 	1			credit-card				0	Credit Card
- * 	2			paypal					1	Paypal
- * 	3			bitcoin					2	Bitcoin
- * 
- * @type {HTMLSelectElement} paySelect - Change event target
- * @event event:change
- */
-paySelect.addEventListener('change', 
-	/** 
-	 * @description - Initialize: Hide all payment containers
-	 * 
-	 * @method
-	 * @type {HTMLDivElement} pay[i] - <div> container for payment option
-	 * @property {string} pay[i].id - <div> element's id string
-	 * @type {string} paymentType - Value of option selected with paySelect (paySelect.value)
-	 * @param {module:paySelect~event:change} e - Change event from paySelect
-	 * @listens module:paySelect~event:change
-	 */
-	(e) => {
+/** Change in payment select element
+ * @event paySelectChange */
+
+/** 
+ * 1. Hide all payment containers
+ * 2. Show selected type
+ * - Select Option --- paySelect.value/pay[i].id --- i --- Type
+ * - 1 --------------- credit-card ----------------- 0 --- Credit Card
+ * - 2 --------------- paypal ---------------------- 1 --- Paypal
+ * - 3 --------------- bitcoin --------------------- 2 --- Bitcoin
+ * @name paySelectListener
+ * @function
+ * @param {Event} paySelectChange
+ * @listens paySelectChange */
+paySelect.addEventListener('change', (e) => {
+	/** Value of payment select option
+	 * @type {String} paymentType */
 	const paymentType = e.currentTarget.value;
 
 	for(i=0 ; i<3; i++) { 
@@ -295,29 +280,17 @@ paySelect.addEventListener('change',
 
 
 
-/**
- * @description - Real-time Error Messages
- * Generalized Creator for 'input'-Listeners
- * If input-event on <input type='text> is not valid:
- * 1. Flag containers as invalid
- * 2. Show hints
- * 		a. Modify messages for specific email errors
- * Else hide hints, reset messages, reset flags
- * 
+/** Generalized 'input'-Listener Callback
+ * 1. If input is not valid: Flag parent container as invalid
+ * 2. [NOTE]: Show hints, Modify messages for specific email errors
+ * 3. Else: hide hints, reset messages, reset flags
  * @function createListener
- * @param {callback} validator - {bool} = validator({string})
- * @type {event:input} e - keyboard 'input' event 
- * @property {HTMLInputElement} e.target - target <input type='text'> element
- * @property {string} e.target.value - target element's text value
- * @type {string} text - See e.target.value
- * @type {bool} valid
- * @type {HTMLParagraphElement} hint - Hint <p> shown for invalid 'input'
- * @type {HTMLLabelElement} inputContainer - parent of input element
- * @event event:input
- */
+ * @param {callback} validator - {bool} = validator({string}) */
 function createListener( validator ) {
 	return e => {
 		const text = e.target.value;
+		/** Hint-p shown for invalid 'input'
+		 * @type {HTMLParagraphElement} hint */
 		const hint = e.target.parentElement.lastElementChild;
 		const inputContainer = e.target.parentElement;
 
@@ -329,14 +302,7 @@ function createListener( validator ) {
 			inputContainer.classList.remove('valid');
 			inputContainer.classList.add('not-valid');
 
-			/**
-			 * @description Conditional Error Message - Email
-			 * @type {object} emailError - Global variable. Tracks email-<input> error-type.
-			 * @property {bool} emailError.blank
-			 * @property {bool} emailError.badFormat
-			 * @type {string} blankMsg - Global variable. Blank error-message.
-			 * @type {string} formatMsg - Global variable. Bad-format error-message.
-			 */
+			// Conditional Error Message: Email
 			if(emailError.blank) 	{ 
 				hint.textContent = blankMsg; 
 				delete emailError.blank;
@@ -346,13 +312,13 @@ function createListener( validator ) {
 				delete emailError.badFormat;
 			}
 
-			// Show hint-<p>
+			// Show hint-p
 			hint.style.display = 'inline';
 
 			return; 
 		}
 
-		// Hide hint-<p>. Reset validity.
+		// Hide hint-p. Reset validity.
 		hint.style.display = 'none';
 		inputContainer.classList.remove('not-valid');
 		inputContainer.classList.add('valid');
@@ -364,21 +330,61 @@ function createListener( validator ) {
 
 
 
-/** 
- * @description Attach Listeners to <input type='text'>
- * @type {HTMLInputElement} _Input
- */
+/** User input for name text-input element
+ * @event nameEInput */
+
+/** Name text-input event listener
+ * @name nameInputListener
+ * @function
+ * @param {Event} nameEInput
+ * @listens nameEInput */
 nameInput.addEventListener	( "input", createListener(isValidName) );
+
+/** User input for email-input element
+ * @event emailEInput */
+
+/** Email-input event listener
+ * @name emailInputListener
+ * @function
+ * @param {Event} emailEInput
+ * @listens emailEInput */
 emailInput.addEventListener	( "input", createListener(isValidEmail) );
+
+/** User input for credit card text-input element
+ * @event ccEInput */
+
+/** Credit card text-input event listener
+ * @name ccInputListener
+ * @function
+ * @param {Event} ccEInput
+ * @listens ccEInput */
 ccInput.addEventListener		( "input", createListener(isValidCc) );
+
+/** User input for zip code text-input element
+ * @event zipEInput */
+
+/** Credit card text-input event listener
+ * @name zipInputListener
+ * @function
+ * @param {Event} zipEInput
+ * @listens zipEInput */
 zipInput.addEventListener	( "input", createListener(isValidZip) );
+
+/** User input for CVV text-input element
+ * @event cvvEInput */
+
+/** Credit card text-input event listener
+ * @name cvvInputListener
+ * @function
+ * @param {Event} cvvEInput
+ * @listens cvvEInput */
 cvvInput.addEventListener	( "input", createListener(isValidCvv) );
 
 
 
 // Validator function declarations
-/**
- * @description Validator - argument for generalized createListener() function
+
+/** Name validator: Argument for createListener()
  * @function isValidName
  * @param {string} name 
  * @returns {bool}
@@ -393,8 +399,7 @@ function isValidName( name ) {
 	return /^[A-Za-z ]+$/.test( name );
 }
 
-/**
- * @description Validator - argument for generalized createListener() function
+/** Email validator: Argument for createListener()
  * @function isValidEmail
  * @param {string} email
  * @returns {bool}
@@ -414,23 +419,21 @@ function isValidName( name ) {
 }
 
 /**
- * @description Validator - argument for generalized createListener() function
+ * Credit card validator: Argument for createListener()
  * @function isValidCc
  * @param {string} cc 
  * @returns {bool}
  */
 function isValidCc( cc )			{ return /^\d{13,16}$/.test(cc); }
 
-/**
- * @description Validator - argument for generalized createListener() function
+/** Zip code validator: Argument for createListener()
  * @function isValidZip
  * @param {string} zip
  * @returns {bool}
  */
 function isValidZip( zip )		{ return /^\d{5}$/.test(zip); }
 
-/**
- * @description Validator - argument for generalized createListener() function
+/** CVV validator: Argument for createListener()
  * @function isValidCvv
  * @param {string} cvv
  * @returns {bool}
@@ -439,26 +442,19 @@ function isValidCvv( cvv )		{ return /^\d{3}$/.test(cvv); }
 
 
 
-/**
- * @description Form Submission: Validate all inputs
- *
- * @module
- * @type {HTMLFormElement} form - 'submit' event target
- * @event event:submit
- */
+/** User submit event for form element
+ * @event formSubmit */
+
+/** Form submit event listener: Verify valid form completion
+ * @name formSubmitListener
+ * @function
+ * @param {Event} formSubmit
+ * @listens formSubmit */
 form.addEventListener('submit', 
-	/** 
-	 * @description Verify valid form completion
-	 * 
-	 * @method
-	 * @type {bool} fail
-	 * @param {module:form~event:submit} e - Submit event from form
-	 * @listens module:form~event:submit
-	 */
 	(e) => {
 	var fail = false;
 
-	// 1. Call <input> validators
+	// 1. Call text-input validators
 	// 2. If failure
 	//		a. Execute failure protocol failure()
 	// 		b. Focus on invalid input
@@ -481,7 +477,7 @@ form.addEventListener('submit',
 		fail = true;
 	}
 
-	// Only validate credit card text-<inputs> if CC payment option selected
+	// Only validate credit card text-inputs if CC payment option selected
 	if( pay[0].hidden===false) { 
 		if(!isValidCc(ccInput.value))		{ 
 			failure(e, ccInput);
@@ -503,15 +499,14 @@ form.addEventListener('submit',
 
 
 
-/**
- * @description Submit Event Failure Protocol
- * @param {event:submit} e - Prevent default submission behavior
- * @param {HTMLInputElement} elem  - <input> that failed validator test
- * @type {HTMLElement} inputContainer - Parent of failed elem
- * @type {HTMLParagraphElement} hint - <p> holding invalid 'input' message
- */
+/** Submit Event Failure Protocol
+ * @function failure
+ * @param {formSubmit} e - Prevent default submission behavior
+ * @param {HTMLInputElement} elem  - input that failed validator test  */
 function failure(e, elem) {
+	/** @type {HTMLInputElement} - Input that failed validator test */
 	const inputContainer = elem.parentElement;
+	/** @type {HTMLParagraphElement} hint - Holds invalid 'input' message */
 	const hint = inputContainer.lastElementChild;
 	
 	inputContainer.classList.remove('valid');
@@ -535,20 +530,18 @@ function failure(e, elem) {
 
 
 
-/**
- * @description Verify that at least 1 activity is selected
+/** Verify that at least 1 activity is selected
  * @function isValidActivitySelection
- * @type {HTMLInputElement} activityInput - Activity <input type='checkbox'>
- * @type {HTMLLabelElement} activityLabel - activityInput container
- * @type {HTMLCollection} activityCollection - activityLabel collection
- * @returns {bool}
- */
+ * @returns {bool} */
 function isValidActivitySelection() {
 	var valid=false;
+	/** @type {HTMLInputElement} activityInput - Activity checkbox-input */
 	var activityInput;
+	/** @type {HTMLLabelElement} activityLabel - activityInput container */
 	var activityLabel;
 
 	for(activityLabel of activityCollection) {
+		/** @type {HTMLInputElement} activityInput - checkbox-input */
 		activityInput=activityLabel.firstElementChild;
 		if(activityInput.checked) { valid = true; }
 	}
@@ -558,10 +551,7 @@ function isValidActivitySelection() {
 
 
 
-/**
- * @description Accessibility - Attach focus, blur listeners to each activity-<input type='checkbox'>. Add, remove focus to parent classlist.
- * 
- */
+// Accessibility: Use 'focus' class label to highlight currently focused checkbox-input
 for(activityLabel of activityCollection ) {
 	const activityInput = activityLabel.firstElementChild;
 
