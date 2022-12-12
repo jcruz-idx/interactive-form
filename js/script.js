@@ -31,8 +31,6 @@ const blankMsg	= 'Email address cannot be left blank';
  * @type {String} formatMsg */
 const formatMsg = 'Email address must be formatted correctly';
 
-
-
 // Global HTML Elements
 /////////////////////////////////////////////////////////////////////////////////////////////////100
 /** Text-input: Optional, custom job title input
@@ -81,6 +79,7 @@ const form = document.querySelector('form');
 /** Text-input: Name
  * @type {HTMLInputElement} nameInput */
 const nameInput = document.getElementById('name');
+nameInput.parentElement.lastElementChild.textContent = 'Name field cannot be blank, nor contain numbers.';
 
 /** Email-input
  * @type {HTMLInputElement} emailInput */
@@ -320,8 +319,8 @@ function createListenerCB(validatorCB) {
 		inputContainer.classList.remove('not-valid');
 		inputContainer.classList.add('valid');
 		
-		// Reset hint message
-		hint.textContent = formatMsg;
+		// Reset email entry hint message
+		if(e.target.id==='email') { hint.textContent = formatMsg; }
 	}
 }
 
