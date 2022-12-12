@@ -19,7 +19,7 @@ Real-time error notifications are shown for the following:
 Create 'input' listener for specified input-elements (above)
 - Example: `nameInput.addEventListener("input", createListenerCB(isValidName))`
 
-Use a universal callback function, `createListenerCB`, that with a callback function parameter, `validatorCB`, that returns `bool` for use in `.addEventListener(event, callback)`
+Use a universal callback function, `createListenerCB`, with a callback function parameter, `validatorCB`, that returns `bool` for use in `.addEventListener(event, callback)`
 - See: `createListenerCB(validatorCB)`
 
 validatorCB - Callback functions that check for valid input. Return `bool`.
