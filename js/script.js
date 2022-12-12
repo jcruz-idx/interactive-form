@@ -1,6 +1,3 @@
-// (at)ts-check
-// real-time error messages
-
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>100
 //	
 //	script.js
@@ -284,9 +281,9 @@ paySelect.addEventListener('change', (e) => {
  * 1. If input is not valid: Flag parent container as invalid
  * 2. [NOTE]: Show hints, Modify messages for specific email errors
  * 3. Else: hide hints, reset messages, reset flags
- * @function createListener
- * @param {callback} validator - {bool} = validator({string}) */
-function createListener( validator ) {
+ * @function createListenerCB
+ * @param {callback} validatorCB - {bool} = validatorCB({string}) */
+function createListenerCB(validatorCB) {
 	return e => {
 		const text = e.target.value;
 		/** Hint-p shown for invalid 'input'
@@ -295,7 +292,7 @@ function createListener( validator ) {
 		const inputContainer = e.target.parentElement;
 
 		// Callback for input validity
-		const valid = validator(text);
+		const valid = validatorCB(text);
 
 		// If input not valid, flag containers as invalid, show
 		if(!valid) { 
@@ -338,7 +335,7 @@ function createListener( validator ) {
  * @function
  * @param {Event} nameEInput
  * @listens nameEInput */
-nameInput.addEventListener	( "input", createListener(isValidName) );
+nameInput.addEventListener("input", createListenerCB(isValidName));
 
 /** User input for email-input element
  * @event emailEInput */
@@ -348,7 +345,7 @@ nameInput.addEventListener	( "input", createListener(isValidName) );
  * @function
  * @param {Event} emailEInput
  * @listens emailEInput */
-emailInput.addEventListener	( "input", createListener(isValidEmail) );
+emailInput.addEventListener	( "input", createListenerCB(isValidEmail) );
 
 /** User input for credit card text-input element
  * @event ccEInput */
@@ -358,7 +355,7 @@ emailInput.addEventListener	( "input", createListener(isValidEmail) );
  * @function
  * @param {Event} ccEInput
  * @listens ccEInput */
-ccInput.addEventListener		( "input", createListener(isValidCc) );
+ccInput.addEventListener		( "input", createListenerCB(isValidCc) );
 
 /** User input for zip code text-input element
  * @event zipEInput */
@@ -368,7 +365,7 @@ ccInput.addEventListener		( "input", createListener(isValidCc) );
  * @function
  * @param {Event} zipEInput
  * @listens zipEInput */
-zipInput.addEventListener	( "input", createListener(isValidZip) );
+zipInput.addEventListener	( "input", createListenerCB(isValidZip) );
 
 /** User input for CVV text-input element
  * @event cvvEInput */
@@ -378,13 +375,13 @@ zipInput.addEventListener	( "input", createListener(isValidZip) );
  * @function
  * @param {Event} cvvEInput
  * @listens cvvEInput */
-cvvInput.addEventListener	( "input", createListener(isValidCvv) );
+cvvInput.addEventListener	( "input", createListenerCB(isValidCvv) );
 
 
 
-// Validator function declarations
+// Validator callback function declarations
 
-/** Name validator: Argument for createListener()
+/** Name validator: Argument for createListenerCB()
  * @function isValidName
  * @param {string} name 
  * @returns {bool}
@@ -399,7 +396,7 @@ function isValidName( name ) {
 	return /^[A-Za-z ]+$/.test( name );
 }
 
-/** Email validator: Argument for createListener()
+/** Email validator: Argument for createListenerCB()
  * @function isValidEmail
  * @param {string} email
  * @returns {bool}
@@ -419,21 +416,21 @@ function isValidName( name ) {
 }
 
 /**
- * Credit card validator: Argument for createListener()
+ * Credit card validator: Argument for createListenerCB()
  * @function isValidCc
  * @param {string} cc 
  * @returns {bool}
  */
 function isValidCc( cc )			{ return /^\d{13,16}$/.test(cc); }
 
-/** Zip code validator: Argument for createListener()
+/** Zip code validator: Argument for createListenerCB()
  * @function isValidZip
  * @param {string} zip
  * @returns {bool}
  */
 function isValidZip( zip )		{ return /^\d{5}$/.test(zip); }
 
-/** CVV validator: Argument for createListener()
+/** CVV validator: Argument for createListenerCB()
  * @function isValidCvv
  * @param {string} cvv
  * @returns {bool}
