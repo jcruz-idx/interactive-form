@@ -16,13 +16,13 @@ Real-time error notifications are shown for the following:
 - Zip code text-input
 - CVV text-input
 
-An 'input' listener is created for each input of the input-elements above
+Create 'input' listener for specified input-elements (above)
 - Example: `nameInput.addEventListener("input", createListenerCB(isValidName))`
 
-Using generic callback function for `.addEventListener(event, callback)` with a validator callback function parameter
+Use a universal callback function, `createListenerCB`, that with a callback function parameter, `validatorCB`, that returns `bool` for use in `.addEventListener(event, callback)`
 - See: `createListenerCB(validatorCB)`
 
-validatorCB - Callback functions that check for valid input
+validatorCB - Callback functions that check for valid input. Return `bool`.
 - Example: `isValidName(name)`
 
 ## 2. Contitional Error Messaging
